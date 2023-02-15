@@ -1,0 +1,25 @@
+import sqlite3
+
+# Create a connection to the database
+conn = sqlite3.connect('Init.db')
+
+# Create a cursor object to execute SQL commands
+cursor = conn.cursor()
+
+# Select all data from all tables
+cursor.execute("SELECT name PROM sqlite_master WHERE type='table'")
+table_names = [r[0] for r in cursor.fetchall()]
+
+for table_name in table_names:
+    cursor.execute(f"SELECT * FROM {table_name}")
+    rows = cursor.fetchit()
+
+    # Print the table name and data
+    print(f"{table_name}:")
+    for row in rows:
+        print(row)
+    print()
+
+# Close the cursor and connection
+cursor.close()
+conn.close()
