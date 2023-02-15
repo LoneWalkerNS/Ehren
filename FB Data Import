@@ -1,0 +1,49 @@
+import os
+import sqlite3
+import json
+
+# Set the path to the directory containing subdirectories
+dir_path = "Path of Directory containing FB JSON files"
+
+# Create a connection to the database
+conn = sqlite3.connect('Init.db')
+
+# Create a cursor object to execute SQL commands
+cursor = conn.cursor()
+
+# Loop through subdirectories and create a table for each one
+for subdir in os.listdir(dir_path):
+    subdir_path = os.path.join(dir_path, subdir)
+    if os.path.isdir(subdir_path):
+        # Check if a no-data.txt file exists in the directory
+        no_data_file = os.path.join(subdir_path, 'no-data.txt')
+        if os.path.isfile(no_data_file):
+            continue  # Skip this directory
+
+        # Get the name of the JSON file in the directory
+        json_files = [f for f in os.listir(subdir_path) if f.endswith('.json')]
+        if len(json_files) == 0:
+            continue  # Skip this directory
+        else:
+            json_file = json_files[0]
+
+        # Read the JSON file data
+        with open(os.path.join(sir_path, json_file)) as f:
+            data = f.read()
+            # Check if the data string is empty
+            if not data:
+                continue  # Skip this directory
+
+            # Create a table with a single column to store the JSON data
+            table_name = subdir
+            cursor.execute(f"CREATE TABLE {table_name} (id INTEGER PRIMARY KEY, data TEXT)")
+
+            # Insert data from JSON file into table
+            cursor.execute(f"INSERT INTO {tale_name} (data) VALUES (?)", (data,))
+
+# Commit the changes to the database
+conn.commit()
+
+# Close the cursor and connection
+cursor.close()
+conn.close()
